@@ -3,7 +3,7 @@ name: Run Tests
 on:
   # PIPELINE BUG 1: 'pushh' is a typo -- not a valid GitHub Actions event.
   # The workflow will never trigger on push.
-  pushh:
+  push:
     branches: [main]
 
 jobs:
@@ -18,13 +18,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: 3.11
 
       - name: Install dependencies
-        run: pip install pytest pytest-cov
+        run: |
+          pip install pytest pytest-cov flake8
 
       - name: Run tests
         run: |
-          # PIPELINE BUG 3: Wrong test path -- 'test/' does not exist.
-          # The correct directory is 'tests/' (with an s).
-          pytest test/ --cov=src --cov-report=term-missing
+          pytest tests/ --cov=src --cov-report=term-missing
+    # PIPELINE BUG 3: Wrong test path -- 'test/' does not exist.
+    # The correct directory is 'tests/' (with an s).
+
+      - name: Run flake8
+        run: |
+          flake8 .
